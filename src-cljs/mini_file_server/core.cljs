@@ -77,7 +77,7 @@
 (ready
   (aset js/Dropzone "autoDiscover" false)
   (hide-alert)
-  (let [dz (js/Dropzone. "#dropzone")]
+  (let [dz (js/Dropzone. "#dropzone" #js {:maxFilesize 2048})]
     (.on dz "queuecomplete" (fn []
                               (when-not (seq (.getRejectedFiles dz))
                                 (.removeAllFiles dz))
