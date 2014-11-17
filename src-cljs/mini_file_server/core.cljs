@@ -79,7 +79,8 @@
   (hide-alert)
   (let [dz (js/Dropzone. "#dropzone")]
     (.on dz "queuecomplete" (fn []
-                              (.removeAllFiles dz)
+                              (when-not (seq (.getRejectedFiles dz))
+                                (.removeAllFiles dz))
                               (update-list))))
   (doto ($ :#list)
     (on :keyup "input[type=text]"
