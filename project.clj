@@ -14,7 +14,8 @@
                  [jayq "2.5.2"]
                  [hiccup "1.0.5"]]
   :plugins [[lein-ring "0.8.13"]
-            [lein-cljsbuild "1.0.3"]]
+            [lein-cljsbuild "1.0.3"]
+            [lein-bin "0.3.4"]]
   :ring {:handler mini-file-server.core.handler/app}
   :hooks [leiningen.cljsbuild]
   :cljsbuild {:builds [{:source-paths ["src-cljs"]
@@ -24,6 +25,7 @@
                                    :externs ["externs/jquery-1.9.js"
                                              "externs/dropzone.js"
                                              "externs/zeroclipboard.js"]}}]}
+  :bin {:name "mini-file-server"}
   :profiles
   {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
                         [ring-mock "0.1.5"]]}

@@ -5,13 +5,13 @@ A simple file server written in Clojure and ClojureScript.
 ## Build
 
 ```
-lein uberjar
+lein bin
 ```
 
 ## Run
 
 ```
-java -jar mini-file-server-0.1.0-standalone.jar ~/data-dir 3000
+target/mini-file-server ~/data-dir 3000
 ```
 
 ## API
