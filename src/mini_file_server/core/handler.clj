@@ -2,8 +2,8 @@
   (:require [mini-file-server.core.view.index :as index]
             [mini-file-server.core.view.list :as list]
             [mini-file-server.core.fs :as fs]
-            [clojure.java.io :as io]
             [clojure.string :as str]
+            [clojure.java.io :as io]
             [clojure.tools.logging :as log]
             [compojure.core :refer :all]
             [compojure.route :as route]
@@ -12,7 +12,7 @@
             [ring.middleware.json :refer [wrap-json-response]]
             ;; http://mmcgrana.github.io/ring/ring.util.response.html
             ;; Returns a Ring response with the given body, status of 200, and no headers.
-            [ring.util.response :refer [response file-response]])
+            [ring.util.response :refer [response file-response content-type]])
   (:gen-class))
 
 (defn- join [& args]
@@ -22,6 +22,16 @@
   (str ((comp name :scheme) params) "://"
        (get-in params [:headers "host"]) "/"
        (join group filename)))
+
+(defn- directory-name [path]
+  (and (.endsWith path ".tgz")
+       (let [dir (str/replace path #"\.tgz$" "")]
+         (when (fs/is-directory? dir) dir))))
+
+(defn- streaming-output [dir]
+  (-> (ring.util.io/piped-input-stream (partial fs/archive dir))
+      response
+      (content-type "application/x-compressed")))
 
 (defroutes app-routes
   (route/resources "/")
@@ -43,7 +53,11 @@
   (GET "/*" {{path :*} :params}
     (if-let [resp (file-response (fs/path-for path))]
       (do (log/info (str "Serving: " path)) resp)
-      (do (log/error (str "File not found: " path)) nil)))
+      (if-let [dir (directory-name path)]
+        (do
+          (log/info (str "Serving archive for " dir))
+          (streaming-output dir))
+        (log/error (str "File not found: " path)))))
   (DELETE "/*" {{filename :*} :params}
     (let [path (fs/path-for filename)]
       (log/info (format "Deleting %s: %s" filename path))

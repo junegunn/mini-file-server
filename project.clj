@@ -1,4 +1,4 @@
-(defproject mini-file-server "0.1.0"
+(defproject mini-file-server "0.1.1"
   :description "Simple file server"
   :url "http://github.com/junegunn/mini-file-server"
   :license {:name "MIT"
@@ -7,6 +7,7 @@
                  [org.clojure/clojurescript "0.0-2371"]
                  [org.clojure/tools.logging "0.3.1"]
                  [joda-time/joda-time "2.5"]
+                 [commons-io/commons-io "2.4"]
                  [compojure "1.2.0"]
                  [ring/ring-defaults "0.1.2"]
                  [ring/ring-json "0.3.1"]
@@ -24,7 +25,8 @@
                                    :pretty-print false
                                    :externs ["externs/jquery-1.9.js"
                                              "externs/dropzone.js"
-                                             "externs/zeroclipboard.js"]}}]}
+                                             "externs/zeroclipboard.js"]}}]
+              :test-commands {"" ["true"]}}
   :bin {:name "mini-file-server"}
   :profiles
   {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]

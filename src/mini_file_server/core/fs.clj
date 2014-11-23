@@ -30,6 +30,9 @@
 (defn path-for [& args]
   (str/join "/" (concat [@dir] (filter some? args))))
 
+(defn is-directory? [path]
+  (.isDirectory (io/file (path-for path))))
+
 (defn store [tempfile group filename]
   (let [path (path-for group filename)]
     (when (valid-path? path)
@@ -63,6 +66,21 @@
           false)))
     false))
 
+(defn- archive-process [path]
+  (let [path (io/file (path-for path))
+        command (format "tar -C %s -cz %s"
+                        (.getParent path) (.getName path))]
+    (log/info command)
+    (-> (Runtime/getRuntime) (.exec command))))
+
+(defn archive [dir ostream]
+  ;; - No need for with-open thanks to piped-input-stream
+  ;; - copy method buffers the input internally, so there is no need to use a
+  ;;   BufferedInputStream.
+  ;; - http://www.gzip.org/#faq8
+  (org.apache.commons.io.IOUtils/copy
+    (.getInputStream (archive-process dir)) ostream))
+
 (defn- file->map [file]
   {:name (.getName file)
    ;; http://www.joda.org/joda-time/apidocs/org/joda/time/format/DateTimeFormat.html
@@ -79,3 +97,4 @@
                               (str/replace @dir "")
                               (str/replace #"^/*" ""))
                           (map file->map files)]))))
+
