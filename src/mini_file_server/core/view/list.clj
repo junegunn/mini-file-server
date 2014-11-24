@@ -48,7 +48,7 @@
     [:tr [:th "Name"] [:th "Actions"] [:th "Size"] [:th "Last Modified"]]]
    [:tbody
     (for [[group files] all-files]
-      (conj (group->row group)
+      (conj (when-not (empty? group) (group->row group))
             (map (partial file->row group) files)))]])
 
 (defn ->html [all-files]
