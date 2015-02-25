@@ -31,5 +31,5 @@
        [:div.container
         [:div#alert.alert {:role :alert}
          [:strong#message ""]]
-        [:div#list]
-        [:form#dropzone.dropzone {:action "/"}]]])))
+        [:form#dropzone.dropzone {:action "/"}]
+        [:div#list]]])))
