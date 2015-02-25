@@ -90,8 +90,11 @@
 (defn files []
   (let [data (io/file @dir)
         grouped (group-by #(-> % .getParent)
-                          (filter #(and (not= % data) (not (.isDirectory %)))
-                                  (file-seq data)))]
+                          (reverse
+                            (sort-by
+                              #(.lastModified %)
+                              (filter #(and (not= % data) (not (.isDirectory %)))
+                                      (file-seq data)))))]
     (into (sorted-map) (for [[group files] grouped]
                          [(-> group
                               (str/replace @dir "")
