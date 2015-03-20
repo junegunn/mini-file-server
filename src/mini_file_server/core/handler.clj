@@ -41,7 +41,9 @@
   (POST "/" {{{:keys [tempfile filename]} :file group :group} :params :as params}
     (log/info (str "Receiving " (join group filename)))
     (if (fs/store tempfile group filename)
-      (response {:url (url-for params group filename)})
+      (do
+        (.delete tempfile)
+        (response {:url (url-for params group filename)}))
       {:status 400
        :headers {"Content-Type" "text/plain"}
        :body "Bad request"}))
