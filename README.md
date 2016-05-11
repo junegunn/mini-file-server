@@ -10,8 +10,12 @@ lein bin
 
 ## Run
 
-```
+```sh
+# Using executable
 target/mini-file-server ~/data-dir 3000
+
+# Using Uberjar (optionally with extra system properties)
+java -Djava.io.tmpdir=. -jar mini-file-server-0.1.1-standalone.jar ~/data-dir 3000
 ```
 
 ## API
