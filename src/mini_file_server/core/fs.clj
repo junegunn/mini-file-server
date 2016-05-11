@@ -37,7 +37,7 @@
   (let [path (path-for group filename)]
     (when (valid-path? path)
       (io/make-parents path)
-      (io/copy tempfile (io/file path))
+      (.renameTo tempfile (io/file path))
       true)))
 
 (defn delete [path]
