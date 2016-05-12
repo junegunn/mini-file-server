@@ -2,11 +2,6 @@
   (:require [hiccup.core :refer :all]
             [hiccup.page :as page]))
 
-(defn alert [type message]
-  (html
-    [(str "div.alert.alert-" type) {:role :alert}
-     [:span [:strong message]]]))
-
 (defn render []
   (html
     (page/html5
@@ -31,5 +26,8 @@
        [:div.container
         [:div#alert.alert {:role :alert}
          [:strong#message ""]]
-        [:form#dropzone.dropzone {:action "/"}]
+        [:form#dropzone.dropzone {:action "/"}
+         [:div.form-group.col-xs-3
+          [:label {:for "dir"} "Upload directory"]
+          [:input.form-control {:type "text" :name "group" :value ""}]]]
         [:div#list]]])))
