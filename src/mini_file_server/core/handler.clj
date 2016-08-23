@@ -40,11 +40,13 @@
   (GET "/list.json" [] (list/->json))
   (POST "/" {{{:keys [tempfile filename]} :file group :group} :params :as params}
     (log/info (str "Receiving " (join group filename)))
-    (if (fs/store tempfile group filename)
+    (try
+      (fs/store tempfile group filename)
       (response {:url (url-for params group filename)})
-      {:status 400
-       :headers {"Content-Type" "text/plain"}
-       :body "Bad request"}))
+      (catch Exception e
+        {:status 500
+         :headers {"Content-Type" "text/plain"}
+         :body (.getMessage e)})))
   (PUT "/*" {{old-name :* new-name :new} :params}
     (log/info (format "Renaming %s to %s" old-name new-name))
     (response {:result

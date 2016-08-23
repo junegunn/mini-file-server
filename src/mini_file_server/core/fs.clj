@@ -2,7 +2,12 @@
   (:require [clojure.java.io :as io]
             [clojure.tools.logging :as log]
             [clojure.string :as str])
-  (:import org.joda.time.LocalDateTime))
+  (:import org.joda.time.LocalDateTime
+           java.io.File
+           java.nio.file.CopyOption
+           java.nio.file.StandardCopyOption
+           java.nio.file.Files
+           java.nio.file.FileSystems))
 
 (defmulti  canon-path class)
 (defmethod canon-path String       [path] (canon-path (io/file path)))
@@ -33,12 +38,13 @@
 (defn is-directory? [path]
   (.isDirectory (io/file (path-for path))))
 
-(defn store [tempfile group filename]
+(defn store [^File tempfile group filename]
   (let [path (path-for group filename)]
     (when (valid-path? path)
       (io/make-parents path)
-      (.renameTo tempfile (io/file path))
-      true)))
+      (Files/move (.toPath tempfile)
+                  (.. FileSystems getDefault (getPath path (make-array String 0)))
+                  (into-array CopyOption [StandardCopyOption/REPLACE_EXISTING])))))
 
 (defn delete [path]
   (let [file (io/file path)]
