@@ -10,7 +10,7 @@
     (f elem "disabled")))
 
 (defn- filename [elem]
-  (js/encodeURIComponent (data (parent elem) :url)))
+  (js/encodeURI (data (parent elem) :url)))
 
 (defn- build-url [elem]
   (str/join "/" [js/window.location.origin (filename elem)]))
