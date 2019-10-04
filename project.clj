@@ -1,4 +1,4 @@
-(defproject mini-file-server "0.1.3"
+(defproject mini-file-server "0.1.4"
   :description "Simple file server"
   :url "http://github.com/junegunn/mini-file-server"
   :license {:name "MIT"
