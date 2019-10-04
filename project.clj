@@ -27,7 +27,7 @@
                                    :pretty-print false
                                    :externs ["externs/jquery-1.9.js"
                                              "externs/dropzone.js"
-                                             "externs/zeroclipboard.js"]}}]
+                                             "externs/clipboard.js"]}}]
               :test-commands {"" ["true"]}}
   :bin {:name "mini-file-server"}
   :profiles

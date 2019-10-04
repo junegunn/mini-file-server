@@ -33,19 +33,12 @@
 (defn- hide-alert []
   (hide ($ :#alert)))
 
-(defn- alert-clipboard [event]
-  (js/alert (str "Copied URL to clipboard:\n"
-                 (aget event "data" "text/plain"))))
+(defn- alert-clipboard [url]
+  (js/alert (str "Copied URL to clipboard:\n" url)))
 
 (defn- init-buttons []
-  (let [zc (js/ZeroClipboard. ($ :button.link))]
-    (.on
-      zc "copy"
-      #(.setData (.-clipboardData %) "text/plain"
-                 (build-url ($ (.-target %)))))
-    (.on
-      zc "ready"
-      #(.on zc "aftercopy" alert-clipboard))))
+  (js/ClipboardJS.
+    "button.link" #js {:text #(doto (build-url ($ %)) alert-clipboard)}))
 
 (defn- update-list []
   (let-ajax [fragment {:url "/list.html"

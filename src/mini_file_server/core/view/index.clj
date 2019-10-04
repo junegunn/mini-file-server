@@ -15,7 +15,7 @@
        (page/include-js "js/bootstrap.min.js")
        (page/include-js "js/dropzone.min.js")
        (page/include-js "js/main.js")
-       (page/include-js "zeroclipboard/ZeroClipboard.min.js")
+       (page/include-js "js/clipboard.min.js")
        (page/include-css "css/dropzone.css")
        (page/include-css "css/bootstrap.min.css")]
       [:body
