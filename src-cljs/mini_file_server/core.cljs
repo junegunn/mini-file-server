@@ -43,8 +43,7 @@
 (defn- update-list []
   (let-ajax [fragment {:url "/list.html"
                        :dataType :html}]
-    (html ($ :#list) fragment)
-    (init-buttons)))
+    (html ($ :#list) fragment)))
 
 (defn- delete-and-update [filename]
   (show-alert :info (str "Deleting " filename))
@@ -70,6 +69,7 @@
 (ready
   (aset js/Dropzone "autoDiscover" false)
   (hide-alert)
+  (init-buttons)
   (let [dz (js/Dropzone. "#dropzone" #js {:maxFilesize 2048})]
     (.on dz "queuecomplete" (fn []
                               (when-not (seq (.getRejectedFiles dz))
