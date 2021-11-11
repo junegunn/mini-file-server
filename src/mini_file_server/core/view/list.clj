@@ -2,9 +2,9 @@
   (:require [mini-file-server.core.fs :as fs]
             [ring.util.response :refer [response]]
             [clojure.string :as str]
-            [hiccup.core :refer :all]))
+            [rum.core :as rum]))
 
-(defn- button-group [fullname]
+(rum/defc button-group [fullname]
   [:div.btn-group {:role :group :data-url fullname}
    [:button.btn.btn-default.download
     {:title "Download"}
@@ -19,7 +19,7 @@
     {:title "Delete"}
     [:span.glyphicon.glyphicon-remove]]])
 
-(defn- group->row [group]
+(rum/defc group->row [group]
   [:tr.active
    [:td.col-md-6
     [:h4 group]]
@@ -32,7 +32,7 @@
       {:title "Link"}
       [:span.glyphicon.glyphicon-paperclip]]]]])
 
-(defn- file->row [group file]
+(rum/defc file->row [group file]
   (let [name (:name file)
         fullname (str/join "/" (filter (complement empty?) [group name]))]
     [:tr
@@ -42,7 +42,7 @@
      [:td.col-md-1 [:span.badge (:size file)]]
      [:td.col-md-2 (:mtime file)]]))
 
-(defn ->vector [all-files]
+(rum/defc ->vector [all-files]
   [:table.table.table-hover
    [:thead
     [:tr [:th "Name"] [:th "Actions"] [:th "Size"] [:th "Last Modified"]]]
@@ -53,7 +53,7 @@
 
 (defn ->html [all-files]
   (if (seq all-files)
-    (html (->vector all-files))
+    (rum/render-static-markup (->vector all-files))
     ""))
 
 (defn ->json [] (response (fs/files)))
