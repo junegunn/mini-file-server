@@ -42,7 +42,9 @@
     "button.link" #js {:text #(doto (build-url ($ %)) alert-clipboard)}))
 
 (defn- update-list []
+  (.start js/NProgress)
   (let-ajax [json {:url "/list.json" :dataType :json}]
+    (.done js/NProgress)
     (ls/hydrate (js->clj json :keywordize-keys true)
                 (-> js/document (.getElementById "list")))))
 
@@ -69,6 +71,7 @@
 
 (ready
   (aset js/Dropzone "autoDiscover" false)
+  (.configure js/NProgress #js {:trickleSpeed 50})
   (hide-alert)
   (init-buttons)
   (let [dz (js/Dropzone. "#dropzone" #js {:maxFilesize 2048})]

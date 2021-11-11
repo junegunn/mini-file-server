@@ -14,10 +14,12 @@
        (page/include-js "js/jquery-1.9.1.min.js")
        (page/include-js "js/bootstrap.min.js")
        (page/include-js "js/dropzone.min.js")
+       (page/include-js "js/nprogress.js")
        (page/include-js "js/main.js")
        (page/include-js "js/clipboard.min.js")
        (page/include-css "css/dropzone.css")
-       (page/include-css "css/bootstrap.min.css")]
+       (page/include-css "css/bootstrap.min.css")
+       (page/include-css "css/nprogress.css")]
       [:body
        [:nav.navbar.navbar-default {:role :navigation}
         [:div.container
