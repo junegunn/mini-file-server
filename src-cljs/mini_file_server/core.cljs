@@ -1,5 +1,6 @@
 (ns mini-file-server.core
-  (:require [jayq.core :as jq :refer
+  (:require [mini-file-server.core.list :as ls]
+            [jayq.core :as jq :refer
              [$ on data parent next prev val find html
               remove-prop add-class remove-class hide show]]
             [clojure.string :as str])
@@ -41,9 +42,9 @@
     "button.link" #js {:text #(doto (build-url ($ %)) alert-clipboard)}))
 
 (defn- update-list []
-  (let-ajax [fragment {:url "/list.html"
-                       :dataType :html}]
-    (html ($ :#list) fragment)))
+  (let-ajax [json {:url "/list.json" :dataType :json}]
+    (ls/hydrate (js->clj json :keywordize-keys true)
+                (-> js/document (.getElementById "list")))))
 
 (defn- delete-and-update [filename]
   (show-alert :info (str "Deleting " filename))

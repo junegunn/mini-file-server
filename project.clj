@@ -14,7 +14,7 @@
                  [ring/ring-defaults "0.3.3"]
                  [ring/ring-json "0.5.1"]
                  [jayq "2.5.5"]
-                 [rum "0.12.8" :exclusions [cljsjs/react cljsjs/react-dom]]]
+                 [rum "0.12.8"]]
   :plugins [[lein-ring "0.12.5"]
             [lein-cljsbuild "1.1.4"]
             [lein-bin "0.3.4"]]

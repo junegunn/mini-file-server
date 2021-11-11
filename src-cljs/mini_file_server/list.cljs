@@ -1,7 +1,5 @@
-(ns mini-file-server.core.view.list
-  (:require [mini-file-server.core.fs :as fs]
-            [ring.util.response :refer [response]]
-            [clojure.string :as str]
+(ns mini-file-server.core.list
+  (:require [clojure.string :as str]
             [rum.core :as rum]))
 
 (rum/defc button-group [fullname]
@@ -20,17 +18,18 @@
     [:span.glyphicon.glyphicon-remove]]])
 
 (rum/defc group->row [group]
-  [:tr.active
-   [:td.col-md-6
-    [:h4 group]]
-   [:td {:colspan 3}
-    [:div.btn-group {:role :group :data-url (str group ".tgz")}
-     [:button.btn.btn-default.download
-      {:title "Download archive"}
-      [:span.glyphicon.glyphicon-download-alt]]
-     [:button.btn.btn-default.link
-      {:title "Link"}
-      [:span.glyphicon.glyphicon-paperclip]]]]])
+  (when-not (empty? group)
+    [:tr.active
+     [:td.col-md-6
+      [:h4 group]]
+     [:td {:colspan 3}
+      [:div.btn-group {:role :group :data-url (str group ".tgz")}
+       [:button.btn.btn-default.download
+        {:title "Download archive"}
+        [:span.glyphicon.glyphicon-download-alt]]
+       [:button.btn.btn-default.link
+        {:title "Link"}
+        [:span.glyphicon.glyphicon-paperclip]]]]]))
 
 (rum/defc file->row [group file]
   (let [name (:name file)
@@ -47,14 +46,9 @@
    [:thead
     [:tr [:th "Name"] [:th "Actions"] [:th "Size"] [:th "Last Modified"]]]
    [:tbody
-    (for [[group files] all-files]
-      (conj (when-not (empty? group) (group->row group))
-            (map (partial file->row group) files)))]])
+    (for [[group files] (sort (group-by :group all-files))]
+      [(group->row group)
+       (map (partial file->row group) files)])]])
 
-(defn ->html [all-files]
-  (if (seq all-files)
-    (rum/render-static-markup (->vector all-files))
-    ""))
-
-(defn ->json [] (response (fs/files)))
-
+(defn hydrate [all-files elem]
+  (rum/hydrate (->vector all-files) elem))

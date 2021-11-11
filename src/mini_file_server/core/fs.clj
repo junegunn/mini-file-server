@@ -89,17 +89,13 @@
 
 (defn- file->map [file]
   {:name (.getName file)
+   :group (-> file .getParent (str/replace @dir "") (str/replace #"^/*" ""))
    ;; http://www.joda.org/joda-time/apidocs/org/joda/time/format/DateTimeFormat.html
    :mtime (.toString (LocalDateTime. (.lastModified file)) "YYYY/MM/dd HH:mm:ss")
    :size (.length file)})
 
 (defn files []
   (let [data (io/file @dir)
-        grouped (group-by #(-> % .getParent)
-                          (filter #(and (not= % data) (not (.isDirectory %)))
-                                  (file-seq data)))]
-    (into (sorted-map) (for [[group files] grouped]
-                         [(-> group
-                              (str/replace @dir "")
-                              (str/replace #"^/*" ""))
-                          (reverse (sort-by :mtime (pmap file->map files)))]))))
+        all-files (filter #(and (not= % data) (not (.isDirectory %)))
+                          (file-seq data))]
+    (reverse (sort-by :mtime (pmap file->map all-files)))))

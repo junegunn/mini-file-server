@@ -1,6 +1,5 @@
 (ns mini-file-server.core.handler
   (:require [mini-file-server.core.view.index :as index]
-            [mini-file-server.core.view.list :as list]
             [mini-file-server.core.fs :as fs]
             [clojure.string :as str]
             [clojure.java.io :as io]
@@ -36,8 +35,7 @@
 (defroutes app-routes
   (route/resources "/")
   (GET "/" [] (index/render))
-  (GET "/list.html" [] (list/->html (fs/files)))
-  (GET "/list.json" [] (list/->json))
+  (GET "/list.json" [] (response (fs/files)))
   (POST "/" {{{:keys [tempfile filename]} :file group :group} :params :as params}
     (log/info (str "Receiving " (join group filename)))
     (try
