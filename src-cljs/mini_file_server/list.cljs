@@ -36,7 +36,7 @@
         fullname (str/join "/" (filter (complement empty?) [group name]))]
     [:tr
      [:td.col-md-6
-      [:input.form-control {:type "text" :value fullname}]]
+      [:input.form-control {:type "text" :defaultValue fullname}]]
      [:td.col-md-2 (button-group fullname)]
      [:td.col-md-1 [:span.badge (:size file)]]
      [:td.col-md-2 (:mtime file)]]))

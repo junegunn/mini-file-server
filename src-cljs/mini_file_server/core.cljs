@@ -1,7 +1,7 @@
 (ns mini-file-server.core
   (:require [mini-file-server.core.list :as ls]
             [jayq.core :as jq :refer
-             [$ on data parent next prev val find html
+             [$ on attr parent next prev val find html
               remove-prop add-class remove-class hide show]]
             [clojure.string :as str])
   (:use-macros [jayq.macros :only [let-ajax ready]]))
@@ -11,7 +11,7 @@
     (f elem "disabled")))
 
 (defn- filename [elem]
-  (js/encodeURI (data (parent elem) :url)))
+  (js/encodeURI (attr (parent elem) :data-url)))
 
 (defn- build-url [elem]
   (str/join "/" [js/window.location.origin (filename elem)]))
