@@ -16,9 +16,6 @@
 (defn- build-url [elem]
   (str/join "/" [js/window.location.origin (filename elem)]))
 
-(defn- prompt-url [url]
-  (.prompt js/window "Copy URL to your clipboard" url))
-
 (defn- download-url [url]
   (set! js/window.location.href url))
 
