@@ -33,9 +33,14 @@
       response
       (content-type "application/x-compressed")))
 
+(def mfs-auth
+  (let [mfs-auth (System/getenv "MFS_AUTH")]
+       (if mfs-auth
+         (str/split mfs-auth #":"))))
+
 (defn authenticated? [id pass]
-  (and (= id "admin")
-       (= pass "admin")))
+  (and (= id (nth mfs-auth 0))
+       (= pass (nth mfs-auth 1))))
 
 (defroutes update-routes
   (POST "/" {{{:keys [tempfile filename]} :file group :group} :params :as params}
@@ -61,7 +66,6 @@
   (route/resources "/")
   (GET "/" [] (index/render))
   (GET "/list.json" [] (response (fs/files)))
-  (wrap-basic-authentication update-routes authenticated?)
   (GET "/*" {{path :*} :params}
     (if-let [resp (file-response (fs/path-for path))]
       (do (log/info (str "Serving: " path)) resp)
@@ -70,6 +74,9 @@
           (log/info (str "Serving archive for " dir))
           (streaming-output dir))
         (log/error (str "File not found: " path)))))
+  (if mfs-auth
+    (wrap-basic-authentication update-routes authenticated?)
+    update-routes)
   (route/not-found "Not Found"))
 
 (def app
