@@ -53,10 +53,10 @@
     (response {:result
                (and (some? new-name)
                     (apply fs/rename (map fs/path-for [old-name new-name])))}))
-(DELETE "/*" {{filename :*} :params}
-  (let [path (fs/path-for filename)]
-    (log/info (format "Deleting %s: %s" filename path))
-    (response {:result (fs/delete path)}))))
+  (DELETE "/*" {{filename :*} :params}
+    (let [path (fs/path-for filename)]
+      (log/info (format "Deleting %s: %s" filename path))
+      (response {:result (fs/delete path)}))))
 
 (defroutes app-routes
   (route/resources "/")
