@@ -35,8 +35,7 @@
 
 (defn authenticated? [id pass]
   (and (= id "admin")
-       (= pass "admin")
-       {:user id :passwd pass}))
+       (= pass "admin")))
 
 (defroutes update-routes
   (POST "/" {{{:keys [tempfile filename]} :file group :group} :params :as params}
