@@ -34,13 +34,11 @@
       (content-type "application/x-compressed")))
 
 (def mfs-auth
-  (let [mfs-auth (System/getenv "MFS_AUTH")]
-       (if mfs-auth
-         (str/split mfs-auth #":"))))
+  (some-> (System/getenv "MFS_AUTH")
+          (str/split #":")))
 
 (defn authenticated? [id pass]
-  (and (= id (nth mfs-auth 0))
-       (= pass (nth mfs-auth 1))))
+  (= [id pass] mfs-auth))
 
 (defroutes update-routes
   (POST "/" {{{:keys [tempfile filename]} :file group :group} :params :as params}
