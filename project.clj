@@ -9,6 +9,7 @@
                  [joda-time/joda-time "2.10.13"]
                  [commons-io/commons-io "2.11.0"]
                  [compojure "1.6.2"]
+                 [ring-basic-authentication "1.2.0"]
                  [ring/ring-core "1.9.4"]
                  [ring/ring-jetty-adapter "1.9.4"]
                  [ring/ring-defaults "0.3.3"]

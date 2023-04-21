@@ -7,6 +7,7 @@
             [compojure.core :refer :all]
             [compojure.route :as route]
             [ring.adapter.jetty :as jetty]
+            [ring.middleware.basic-authentication :refer [wrap-basic-authentication]]
             [ring.middleware.defaults :refer [wrap-defaults api-defaults]]
             [ring.middleware.json :refer [wrap-json-response]]
             ;; http://mmcgrana.github.io/ring/ring.util.response.html
@@ -32,10 +33,14 @@
       response
       (content-type "application/x-compressed")))
 
-(defroutes app-routes
-  (route/resources "/")
-  (GET "/" [] (index/render))
-  (GET "/list.json" [] (response (fs/files)))
+(def mfs-auth
+  (some-> (System/getenv "MFS_AUTH")
+          (str/split #":")))
+
+(defn authenticated? [id pass]
+  (= [id pass] mfs-auth))
+
+(defroutes update-routes
   (POST "/" {{{:keys [tempfile filename]} :file group :group} :params :as params}
     (log/info (str "Receiving " (join group filename)))
     (try
@@ -50,6 +55,15 @@
     (response {:result
                (and (some? new-name)
                     (apply fs/rename (map fs/path-for [old-name new-name])))}))
+  (DELETE "/*" {{filename :*} :params}
+    (let [path (fs/path-for filename)]
+      (log/info (format "Deleting %s: %s" filename path))
+      (response {:result (fs/delete path)}))))
+
+(defroutes app-routes
+  (route/resources "/")
+  (GET "/" [] (index/render))
+  (GET "/list.json" [] (response (fs/files)))
   (GET "/*" {{path :*} :params}
     (if-let [resp (file-response (fs/path-for path))]
       (do (log/info (str "Serving: " path)) resp)
@@ -58,10 +72,9 @@
           (log/info (str "Serving archive for " dir))
           (streaming-output dir))
         (log/error (str "File not found: " path)))))
-  (DELETE "/*" {{filename :*} :params}
-    (let [path (fs/path-for filename)]
-      (log/info (format "Deleting %s: %s" filename path))
-      (response {:result (fs/delete path)})))
+  (if mfs-auth
+    (wrap-basic-authentication update-routes authenticated?)
+    update-routes)
   (route/not-found "Not Found"))
 
 (def app
