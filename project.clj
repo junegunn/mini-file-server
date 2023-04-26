@@ -1,4 +1,4 @@
-(defproject mini-file-server "0.2.3"
+(defproject mini-file-server "0.2.4"
   :description "Simple file server"
   :url "http://github.com/junegunn/mini-file-server"
   :license {:name "MIT"
@@ -15,7 +15,7 @@
                  [ring/ring-defaults "0.3.3"]
                  [ring/ring-json "0.5.1"]
                  [jayq "2.5.5"]
-                 [rum "0.12.8"]]
+                 [rum "0.12.10"]]
   :plugins [[lein-ring "0.12.5"]
             [lein-cljsbuild "1.1.4"]
             [lein-bin "0.3.4"]]

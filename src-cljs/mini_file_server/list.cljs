@@ -34,7 +34,7 @@
 (rum/defc file->row [group file]
   (let [name (:name file)
         fullname (str/join "/" (filter (complement empty?) [group name]))]
-    [:tr
+    [:tr {:key fullname}
      [:td.col-md-6
       [:input.form-control {:type "text" :placeholder fullname :defaultValue fullname}]]
      [:td.col-md-2 (button-group fullname)]
