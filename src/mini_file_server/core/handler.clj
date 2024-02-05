@@ -71,8 +71,6 @@
 
 (defroutes app-routes
   (route/resources "/")
-  (wrap-auth list-routes)
-  (wrap-auth update-routes)
   (GET "/*" {{path :*} :params}
     (if-let [resp (file-response (fs/path-for path))]
       (do (log/info (str "Serving: " path)) resp)
@@ -81,6 +79,8 @@
           (log/info (str "Serving archive for " dir))
           (streaming-output dir))
         (log/error (str "File not found: " path)))))
+  (wrap-auth list-routes)
+  (wrap-auth update-routes)
   (route/not-found "Not Found"))
 
 (def app
