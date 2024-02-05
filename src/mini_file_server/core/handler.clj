@@ -60,10 +60,19 @@
       (log/info (format "Deleting %s: %s" filename path))
       (response {:result (fs/delete path)}))))
 
+(defroutes list-routes
+  (GET "/" [] (index/render))
+  (GET "/list.json" [] (response (fs/files))))
+
+(defn wrap-auth [routes]
+  (if mfs-auth
+    (wrap-basic-authentication routes authenticated?)
+    routes))
+
 (defroutes app-routes
   (route/resources "/")
-  (GET "/" [] (index/render))
-  (GET "/list.json" [] (response (fs/files)))
+  (wrap-auth list-routes)
+  (wrap-auth update-routes)
   (GET "/*" {{path :*} :params}
     (if-let [resp (file-response (fs/path-for path))]
       (do (log/info (str "Serving: " path)) resp)
@@ -72,9 +81,6 @@
           (log/info (str "Serving archive for " dir))
           (streaming-output dir))
         (log/error (str "File not found: " path)))))
-  (if mfs-auth
-    (wrap-basic-authentication update-routes authenticated?)
-    update-routes)
   (route/not-found "Not Found"))
 
 (def app
